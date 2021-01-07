@@ -1,0 +1,43 @@
+#docker-compose.yml のバージョン
+version: "3.8"
+
+#docker volumeの設定
+volumes:
+  docker-volumes:
+
+#services以下に各コンテナの設定を記述
+services:
+  #webサーバーのコンテナ(名前は自由)
+  web:
+    image: nginx:1.18
+    ports:
+      #ローカルの9000番ポートとコンテナ内のNginxのポート番号80（Nginxのデフォルトのポート番号）をリンク
+      - "9000:80"
+    depends_on:
+      #PHPのコンテナを先に起動 PHP→Nginx
+      - app
+    volumes:
+      #ローカルディレクトリ:Dockerコンテナ内のディレクトリ
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - .:/var/www/html
+  #アプリケーションのコンテナ
+  app:
+    #./docker/phpの配下にあるDockerfileというテキストファイルの内容にのっとってイメージを構築
+    build: ./docker/php
+    volumes:
+      - .:/var/www/html
+  #DBのコンテナ
+  db:
+    image: mysql:5.7
+    ports:
+      - "3307:3306"
+    environment:
+      #githubにあげるときはenvにする
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - TZ="Asia/Tokyo"
+    volumes:
+      #ボリュームとコンテナディレクトリをリンク
+      - docker-volumes:/var/lib/mysql
