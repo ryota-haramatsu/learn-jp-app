@@ -327,7 +327,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -1946,53 +1945,48 @@ var render = function() {
   return _c(
     "div",
     [
-      _c(
-        "v-app",
-        [
-          _c("header-component"),
-          _vm._v(" "),
-          _c(
-            "main",
-            [
-              _c(
-                "v-container",
-                [
-                  _c(
-                    "v-row",
-                    {
-                      staticClass: "lighten-4",
-                      staticStyle: { height: "750px" },
-                      attrs: { justify: "center", "align-content": "center" }
-                    },
-                    [
-                      _c(
-                        "v-card",
-                        {
-                          staticClass: "mx-auto fill-width",
-                          attrs: { flat: "", "max-width": "640" }
-                        },
-                        [
-                          _vm._v("\n              Top画面\n              "),
-                          _c(
-                            "router-link",
-                            { attrs: { to: { name: "login" } } },
-                            [_vm._v("Login")]
-                          )
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  )
-                ],
-                1
-              )
-            ],
-            1
-          )
-        ],
-        1
-      )
+      _c("v-app", [
+        _c(
+          "main",
+          [
+            _c("router-view"),
+            _vm._v(" "),
+            _c(
+              "v-container",
+              [
+                _c(
+                  "v-row",
+                  {
+                    staticClass: "lighten-4",
+                    staticStyle: { height: "750px" },
+                    attrs: { justify: "center", "align-content": "center" }
+                  },
+                  [
+                    _c(
+                      "v-card",
+                      {
+                        staticClass: "mx-auto fill-width",
+                        attrs: { flat: "", "max-width": "640" }
+                      },
+                      [
+                        _c(
+                          "router-link",
+                          { attrs: { to: { name: "login" } } },
+                          [_vm._v("Login")]
+                        )
+                      ],
+                      1
+                    )
+                  ],
+                  1
+                )
+              ],
+              1
+            )
+          ],
+          1
+        )
+      ])
     ],
     1
   )
@@ -17149,10 +17143,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_FogotPassword_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/FogotPassword.vue */ "./resources/js/components/FogotPassword.vue");
 
 
+
+
+
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]);
-
-
-
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
   mode: "history",
   routes: [{

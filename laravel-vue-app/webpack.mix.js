@@ -15,10 +15,9 @@ mix.js('resources/js/app.js', 'public/js')
    .js("resources/js/router.js", "public/js")
    .sass('resources/sass/app.scss', 'public/css', {
       implementation: require('node-sass')
+   })
+   .version()
+   .browserSync({
+      proxy: '127.0.0.1:8081', // アプリの起動アドレス
+      open: false // ブラウザを自動で開かない
    });
-
-mix.browserSync({
-   proxy: '0.0.0.0:8081', // アプリの起動アドレス
-   open: false // ブラウザを自動で開かない
-})
-

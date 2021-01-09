@@ -1,16 +1,15 @@
 <template>
   <div>
     <v-app>
-        <header-component />
         <main>
+          <router-view />
           <v-container>
             <v-row class="lighten-4" justify="center" align-content="center" style="height: 750px;">
               <v-card
                 class="mx-auto fill-width"
                 flat
                 max-width="640"
-              >
-                Top画面
+              > 
                 <router-link :to="{name:'login'}">Login</router-link>
               </v-card>
             </v-row>
