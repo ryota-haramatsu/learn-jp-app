@@ -12,4 +12,13 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/js/app.js', 'public/js')
-   .sass('resources/sass/app.scss', 'public/css');
+   .js("resources/js/router.js", "public/js")
+   .sass('resources/sass/app.scss', 'public/css', {
+      implementation: require('node-sass')
+   });
+
+mix.browserSync({
+   proxy: '0.0.0.0:8081', // アプリの起動アドレス
+   open: false // ブラウザを自動で開かない
+})
+

@@ -11,30 +11,11 @@
                 max-width="640"
               >
                 <v-card-title class="text-center pa-4">
-                  <h5 class="fill-width font-weight-bold">Login</h5>
+                  <h5 class="fill-width font-weight-bold">Forgot Password</h5>
                 </v-card-title>
                 <v-divider> </v-divider>
                 <div class="px-6 py-8">
-                  <div style="max-width:344px" class="mx-auto">
-                    <div>
-                      <v-btn
-                        class="fill-width mt-5 text-capitalize caption"
-                        color="#385184"
-                        dark
-                        depressed
-                        height="48px"
-                        tile
-                      >
-                        <img
-                          class="button-logo-img mr-4"
-                          style="height:24px;"
-                        />
-                        Login with Facebook
-                      </v-btn>
-                    </div>
-                    <div class="separator separator_login_page">
-                      <div class="middle_separator">or</div>
-                    </div>
+                  <div style="max-width:344px" class="mx-auto">  
                     <div class="pt-6">
                       <div>
                         <v-text-field      
@@ -42,13 +23,7 @@
                           height="48px"
                           outlined
                           placeholder="Email"
-                        ></v-text-field>
-                        <v-text-field
-                          dense
-                          height="48px"
-                          outlined
-                          placeholder="Password"
-                        ></v-text-field>
+                        ></v-text-field>                        
                       </div>
                       <div>
                         <v-btn
@@ -58,17 +33,9 @@
                           height="48px"
                           tile
                         >
-                          Login with Email
+                          Send
                         </v-btn>
-                      </div>
-                      <v-divider></v-divider>
-                      <div class="text-center">
-                        <router-link  :to="{name:'forgot_password'}">Did you fogot your password?</router-link>                       
-                      </div>
-                      <div class="py-4 text-center">
-                        <span>Not a member? Join us from </span>
-                        <router-link :to="{name: 'register'}">here!</router-link>
-                      </div>
+                      </div>  
                     </div>
                   </div>
                 </div>

@@ -11,8 +11,9 @@ services:
   web:
     image: nginx:1.18
     ports:
-      #ローカルの9000番ポートとコンテナ内のNginxのポート番号80（Nginxのデフォルトのポート番号）をリンク
-      - "9000:80"
+      #ローカルの8081番ポートとコンテナ内のNginxのポート番号80（Nginxのデフォルトのポート番号）をリンク
+      - "8081:80" # default.confのlistenと同じにする
+      - "3000:3000"
     depends_on:
       #PHPのコンテナを先に起動 PHP→Nginx
       - app

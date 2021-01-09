@@ -5,13 +5,17 @@
         color="white accent-4"
          justify="center" align-content="center"
       >
+        <v-toolbar-title class="font-weight-bold">
+          <router-link :to="{name: 'top'}">
+            JipanGo
+          </router-link> 
+        </v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-toolbar-title class="font-weight-bold">JipanGo</v-toolbar-title>
-        <v-spacer></v-spacer>
-        <!-- <v-avatar
+        <!-- ログイン後のみ表示 -->
+        <v-avatar hidden
           color="grey lighten-2"
           size="56"
-        ></v-avatar> -->
+        ></v-avatar>
       </v-app-bar>
     </div>
  </template>

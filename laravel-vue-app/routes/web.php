@@ -16,7 +16,7 @@
 //     return view('home', compact('user'));
 // });
 Route::get('/{any}', function() {
-         return view('app');
+        return view('app');
 })->where('any', '.*');
 
 Auth::routes();
