@@ -1,9 +1,14 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Top from "./components/Top.vue";
-import Login from "./components/Login.vue";
-import FogotPassword from './components/FogotPassword.vue';
+
+// ページコンポーネント
+import TopPage from "./pages/TopPage.vue";
+import Register from './pages/Register.vue'
+import Login from "./pages/Login.vue";
+import FogotPassword from './pages/FogotPassword.vue';
+import QuizList from './pages/QuizList.vue';
  
+// これによって<RouterView />コンポーネントなどを使うことができる
 Vue.use(VueRouter);
  
  
@@ -13,7 +18,12 @@ const router = new VueRouter({
         {
             path: "/",
             name: "top",
-            component: Top
+            component: TopPage
+        },
+        {
+            path: "/register",
+            name: "register",
+            component: Register
         },
         {
             path: "/login",
@@ -24,6 +34,11 @@ const router = new VueRouter({
             path: '/password_reset',
             name: 'forgot_password',
             component: FogotPassword,
+        },
+        {
+            path: '/quiz_list',
+            name: 'quiz_list',
+            component: QuizList
         }
     ]
 });

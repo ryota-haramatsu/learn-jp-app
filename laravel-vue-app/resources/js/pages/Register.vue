@@ -1,7 +1,6 @@
 <template>
   <div>
     <v-app>
-        <header-component />
         <main class="mt-5">
           <v-container>
             <v-row class="lighten-4" justify="center" align-content="center">
@@ -11,12 +10,12 @@
                 max-width="640"
               >
                 <v-card-title class="text-center pa-4">
-                  <h5 class="fill-width font-weight-bold">Login</h5>
+                  <h5 class="fill-width font-weight-bold">Register</h5>
                 </v-card-title>
                 <v-divider> </v-divider>
                 <div class="px-6 py-8">
                   <div style="max-width:344px" class="mx-auto">
-                    <div>
+                    <!-- <div>
                       <v-btn
                         class="fill-width mt-5 text-capitalize caption"
                         color="#385184"
@@ -34,9 +33,15 @@
                     </div>
                     <div class="separator separator_login_page">
                       <div class="middle_separator">or</div>
-                    </div>
+                    </div> -->
                     <div class="pt-6">
                       <div>
+                        <v-text-field      
+                          dense
+                          height="48px"
+                          outlined
+                          placeholder="Name"
+                        ></v-text-field>
                         <v-text-field      
                           dense
                           height="48px"
@@ -58,16 +63,13 @@
                           height="48px"
                           tile
                         >
-                          Login with Email
+                          Create your account
                         </v-btn>
                       </div>
                       <v-divider></v-divider>
-                      <div class="text-center">
-                        <router-link  :to="{name:'forgot_password'}">Did you fogot your password?</router-link>                       
-                      </div>
                       <div class="py-4 text-center">
-                        <span>Not a member? Join us from </span>
-                        <router-link :to="{name: 'register'}">here!</router-link>
+                        <span>Did you already our member? you can Login from </span>
+                        <router-link :to="{name: 'login'}">here!</router-link>
                       </div>
                     </div>
                   </div>
@@ -81,9 +83,8 @@
 </template>
 
 <script>
-import HeaderComponent from './HeaderComponent.vue'
     export default {
-        components: { HeaderComponent },   
+     
     }
 </script>
 <style scoped>

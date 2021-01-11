@@ -1,7 +1,6 @@
 <template>
   <div>
-    <v-app>
-        <header-component />
+    <v-app> 
         <main class="mt-5">
           <v-container>
             <v-row class="lighten-4" justify="center" align-content="center">
@@ -11,11 +10,30 @@
                 max-width="640"
               >
                 <v-card-title class="text-center pa-4">
-                  <h5 class="fill-width font-weight-bold">Forgot Password</h5>
+                  <h5 class="fill-width font-weight-bold">Login</h5>
                 </v-card-title>
                 <v-divider> </v-divider>
                 <div class="px-6 py-8">
-                  <div style="max-width:344px" class="mx-auto">  
+                  <div style="max-width:344px" class="mx-auto">
+                    <!-- <div>
+                      <v-btn
+                        class="fill-width mt-5 text-capitalize caption"
+                        color="#385184"
+                        dark
+                        depressed
+                        height="48px"
+                        tile
+                      >
+                        <img
+                          class="button-logo-img mr-4"
+                          style="height:24px;"
+                        />
+                        Login with Facebook
+                      </v-btn>
+                    </div>
+                    <div class="separator separator_login_page">
+                      <div class="middle_separator">or</div>
+                    </div> -->
                     <div class="pt-6">
                       <div>
                         <v-text-field      
@@ -23,7 +41,15 @@
                           height="48px"
                           outlined
                           placeholder="Email"
-                        ></v-text-field>                        
+                        ></v-text-field>
+                        
+                        <v-text-field
+                          dense
+                          height="48px"
+                          outlined
+                          placeholder="Password"
+                        ></v-text-field>
+                        
                       </div>
                       <div>
                         <v-btn
@@ -33,9 +59,17 @@
                           height="48px"
                           tile
                         >
-                          Send
+                          Login with Email
                         </v-btn>
-                      </div>  
+                      </div>
+                      <v-divider></v-divider>
+                      <div class="text-center">
+                        <RouterLink  :to="{name:'forgot_password'}">Did you fogot your password?</RouterLink>                       
+                      </div>
+                      <div class="py-4 text-center">
+                        <span>Not a member? Join us from </span>
+                        <RouterLink :to="{name: 'register'}">here!</RouterLink>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -48,9 +82,8 @@
 </template>
 
 <script>
-import HeaderComponent from './HeaderComponent.vue'
     export default {
-        components: { HeaderComponent },   
+      
     }
 </script>
 <style scoped>

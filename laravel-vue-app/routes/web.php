@@ -15,10 +15,10 @@
 //     $user = 'ryota';
 //     return view('home', compact('user'));
 // });
-Route::get('/{any}', function() {
-        return view('app');
+Route::get('/{any?}', function() {
+        return view('index');
 })->where('any', '.*');
 
-Auth::routes();
+// Auth::routes();
 
 // Route::get('/home', 'HomeController@index')->name('home');

@@ -10,14 +10,16 @@ const mix = require('laravel-mix');
  | file for the application as well as bundling up all the JS files.
  |
  */
-
-mix.js('resources/js/app.js', 'public/js')
-   .js("resources/js/router.js", "public/js")
+mix.browserSync({
+   proxy: 'localhost:8081', // アプリの起動アドレス
+      open: false // ブラウザを自動で開かない
+   })
+   .js('resources/js/app.js', 'public/js')
+   .version()
    .sass('resources/sass/app.scss', 'public/css', {
       implementation: require('node-sass')
    })
-   .version()
-   .browserSync({
-      proxy: '127.0.0.1:8081', // アプリの起動アドレス
-      open: false // ブラウザを自動で開かない
-   });
+
+
+
+// .js("resources/js/router.js", "public/js")
