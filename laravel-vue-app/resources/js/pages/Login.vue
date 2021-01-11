@@ -35,33 +35,36 @@
                       <div class="middle_separator">or</div>
                     </div> -->
                     <div class="pt-6">
-                      <div>
-                        <v-text-field      
+                      <v-form @submit.prevent="login">
+                        <v-text-field   
+                          required   
                           dense
                           height="48px"
                           outlined
                           placeholder="Email"
+                          id="login-email"
+                          v-model="loginForm.email"
                         ></v-text-field>
-                        
                         <v-text-field
+                          required
                           dense
                           height="48px"
                           outlined
                           placeholder="Password"
+                          id="login-password"
+                          v-model="loginForm.password"
                         ></v-text-field>
-                        
-                      </div>
-                      <div>
                         <v-btn
                           class="fill-width caption"
                           color="#FFCB00"
                           depressed
                           height="48px"
                           tile
+                          @click="login"
                         >
                           Login with Email
-                        </v-btn>
-                      </div>
+                        </v-btn>  
+                      </v-form>                    
                       <v-divider></v-divider>
                       <div class="text-center">
                         <RouterLink  :to="{name:'forgot_password'}">Did you fogot your password?</RouterLink>                       
@@ -83,7 +86,25 @@
 
 <script>
     export default {
+      data() {
+        return {
+          loginForm: {
+            email: '',
+            password: ''
+          }
+        }
+      },
       
+      methods: {
+        async login() {
+          // authストアのloginアクションをdispatchメソッドで呼び出す
+          // awaitで非同期なアクションの処理が完了するのを待機
+          await this.$store.dispatch('auth/login', this.loginForm)
+
+          // クイズリストトップページに移動
+          this.$router.push('/quiz_list')
+        }
+      }
     }
 </script>
 <style scoped>

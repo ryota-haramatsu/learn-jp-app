@@ -35,37 +35,50 @@
                       <div class="middle_separator">or</div>
                     </div> -->
                     <div class="pt-6">
-                      <div>
+                      <v-form @submit.prevent="register">
                         <v-text-field      
                           dense
                           height="48px"
                           outlined
                           placeholder="Name"
+                          id="username"
+                          v-model="registerForm.name"
                         ></v-text-field>
                         <v-text-field      
                           dense
                           height="48px"
                           outlined
                           placeholder="Email"
+                          id="email"
+                          v-model="registerForm.email"
                         ></v-text-field>
                         <v-text-field
                           dense
                           height="48px"
                           outlined
                           placeholder="Password"
-                        ></v-text-field>
-                      </div>
-                      <div>
+                          id="password"
+                          v-model="registerForm.password"
+                        ></v-text-field> 
+                        <v-text-field
+                          dense
+                          height="48px"
+                          outlined
+                          placeholder="Password(Confirm)"
+                          id="password-confirmation"
+                          v-model="registerForm.password_confirmation"
+                        ></v-text-field> 
                         <v-btn
                           class="fill-width caption"
                           color="#FFCB00"
                           depressed
                           height="48px"
                           tile
+                          @click="register"
                         >
                           Create your account
                         </v-btn>
-                      </div>
+                      </v-form>
                       <v-divider></v-divider>
                       <div class="py-4 text-center">
                         <span>Did you already our member? you can Login from </span>
@@ -84,7 +97,27 @@
 
 <script>
     export default {
-     
+      data() {
+        return {
+          registerForm: {
+            name: '',
+            email: '',
+            password: '',
+            password_confirmation: ''
+          }
+        }
+      },
+      methods: {
+        async register() {
+          // authストアのregisterアクションをdispatchメソッドで呼び出す
+          // awaitで非同期なアクションの処理が完了するのを待機
+          console.log(this.registerForm)
+          await this.$store.dispatch('auth/register', this.registerForm)
+
+          // クイズリストトップページに移動
+          this.$router.push('/quiz_list')
+        }
+      }
     }
 </script>
 <style scoped>

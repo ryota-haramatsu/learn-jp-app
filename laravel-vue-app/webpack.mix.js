@@ -22,4 +22,4 @@ mix.browserSync({
 
 
 
-// .js("resources/js/router.js", "public/js")
+   // .js("resources/js/router.js", "public/js")

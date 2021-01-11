@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
+
 class RegisterController extends Controller
 {
     /*
@@ -76,11 +77,11 @@ class RegisterController extends Controller
      * Illuminate\Foundation\Auth\RegistersUsersトレイトのregistered()を上書きする
      *
      * @param Request $request
-     * @param [type] $user
-     * @return void
+     * @param  mixed  $user
+     * @return mixed
      */
     protected function registered(Request $request, $user)
     {
         return $user;
-    }
+    }    
 }
