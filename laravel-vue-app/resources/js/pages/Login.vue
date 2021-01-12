@@ -35,7 +35,15 @@
                       <div class="middle_separator">or</div>
                     </div> -->
                     <div class="pt-6">
-                      <v-form @submit.prevent="login">
+                      <div v-if="loginErrors">
+                        <ul v-if="loginErrors.email">
+                          <li v-for="msg in loginErrors.email" :key="msg" class="text-danger">{{ msg }}</li>
+                        </ul>
+                        <ul v-if="loginErrors.password">
+                          <li v-for="msg in loginErrors.password" :key="msg" class="text-danger">{{ msg }}</li>
+                        </ul>
+                      </div>
+                      <v-form @submit.prevent="login" ref="form">
                         <v-text-field   
                           required   
                           dense
@@ -44,6 +52,7 @@
                           placeholder="Email"
                           id="login-email"
                           v-model="loginForm.email"
+                          :rules=[emailRules.required,emailRules.regex]
                         ></v-text-field>
                         <v-text-field
                           required
@@ -53,6 +62,7 @@
                           placeholder="Password"
                           id="login-password"
                           v-model="loginForm.password"
+                          :rules="[passwordRules.required, passwordRules.minLength]"
                         ></v-text-field>
                         <v-btn
                           class="fill-width caption"
@@ -85,27 +95,60 @@
 </template>
 
 <script>
-    export default {
-      data() {
-        return {
-          loginForm: {
-            email: '',
-            password: ''
-          }
-        }
+import { mapState } from 'vuex'
+export default {
+  data() {
+    return {
+      loginForm: {
+        email: '',
+        password: ''
       },
-      
-      methods: {
-        async login() {
-          // authストアのloginアクションをdispatchメソッドで呼び出す
-          // awaitで非同期なアクションの処理が完了するのを待機
-          await this.$store.dispatch('auth/login', this.loginForm)
-
-          // クイズリストトップページに移動
-          this.$router.push('/quiz_list')
-        }
+      emailRules: {
+        required: v => !!v || 'E-mail is required',
+        regex: v => /^(([^<>()[\]\\.,;:\s@]+(\.[^<>()[\]\\.,;:\s@]+)*)|(.+))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(v) || 'E-mail must be valid',
+      },
+      passwordRules: {
+        required: v => !!v || 'Required.',
+        minLength: v => (v && v.length >= 8) || 'Password must be at least 8 characters',
       }
     }
+  },
+
+  mounted(){
+    //エラーをリセット
+    this.$refs.form.resetValidation()
+  },
+  
+  methods: {
+    async login() {
+      // authストアのloginアクションをdispatchメソッドで呼び出す
+      // awaitで非同期なアクションの処理が完了するのを待機
+      console.log(this.$refs.form.validate())
+      if (this.$refs.form.validate()) {
+        await this.$store.dispatch('auth/login', this.loginForm)
+      }
+
+      if (this.apiStatus) {
+        // クイズリストトップページに移動
+        this.$router.push('/quiz_list')
+      }
+    }
+  },
+
+  computed: {
+    // apiStatus() {
+    //   return this.$store.state.auth.apiStatus
+    // },
+    // loginErrors() {
+    //   return this.$store.state.auth.loginErrorMessages
+    // }
+    // 上記をリファクタ
+    ...mapState({
+      apiStatus: state => state.auth.apiStatus,
+      loginErrors: state => state.auth.loginErrorMessages
+    })
+  }
+}
 </script>
 <style scoped>
   .fill-width {

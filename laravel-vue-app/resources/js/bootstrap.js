@@ -32,6 +32,13 @@ window.axios.interceptors.request.use(config => {
     return config
 })
 
+// axios の response インターセプターはレスポンスを受けた後の処理を上書きします
+// エラーレスポンスが返ってきた場合はエラーそのものではなくレスポンスオブジェクトを返す、という処理はどの API 呼び出しにも共通しているためまとめる
+window.axios.interceptors.response.use(
+    response => response,
+    error => error.response || error
+)
+
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting

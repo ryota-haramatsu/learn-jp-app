@@ -1922,6 +1922,7 @@ module.exports = {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_HeaderComponent_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/HeaderComponent.vue */ "./resources/js/components/HeaderComponent.vue");
 /* harmony import */ var _components_FooterComponent_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/FooterComponent.vue */ "./resources/js/components/FooterComponent.vue");
+/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./util */ "./resources/js/util.js");
 //
 //
 //
@@ -1937,12 +1938,36 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
     HeaderComponent: _components_HeaderComponent_vue__WEBPACK_IMPORTED_MODULE_0__["default"],
     FooterComponent: _components_FooterComponent_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
+  },
+  computed: {
+    errorCode: function errorCode() {
+      // this.$store.state.ファイル名.ステート名
+      return this.$store.state.error.code;
+    }
+  },
+  // 監視プロパティ 
+  // computedでstateのcodeが変更されるのを監視
+  watch: {
+    errorCode: {
+      handler: function handler(val) {
+        if (val === _util__WEBPACK_IMPORTED_MODULE_2__["INTERNAL_SERVER_ERROR"]) {
+          this.$router.push('/500');
+        }
+      },
+      immediate: true // 初期読み込み時にも呼び出す
+
+    },
+    // ?
+    $route: function $route() {
+      this.$store.commit('error/setCode', null);
+    }
   }
 });
 
@@ -2116,7 +2141,14 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
@@ -2208,14 +2240,45 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       loginForm: {
         email: '',
         password: ''
+      },
+      emailRules: {
+        required: function required(v) {
+          return !!v || 'E-mail is required';
+        },
+        regex: function regex(v) {
+          return /^(([^<>()[\]\\.,;:\s@]+(\.[^<>()[\]\\.,;:\s@]+)*)|(.+))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(v) || 'E-mail must be valid';
+        }
+      },
+      passwordRules: {
+        required: function required(v) {
+          return !!v || 'Required.';
+        },
+        minLength: function minLength(v) {
+          return v && v.length >= 8 || 'Password must be at least 8 characters';
+        }
       }
     };
+  },
+  mounted: function mounted() {
+    //エラーをリセット
+    this.$refs.form.resetValidation();
   },
   methods: {
     login: function login() {
@@ -2226,14 +2289,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _context.next = 2;
+                // authストアのloginアクションをdispatchメソッドで呼び出す
+                // awaitで非同期なアクションの処理が完了するのを待機
+                console.log(_this.$refs.form.validate());
+
+                if (!_this.$refs.form.validate()) {
+                  _context.next = 4;
+                  break;
+                }
+
+                _context.next = 4;
                 return _this.$store.dispatch('auth/login', _this.loginForm);
 
-              case 2:
-                // クイズリストトップページに移動
-                _this.$router.push('/quiz_list');
+              case 4:
+                if (_this.apiStatus) {
+                  // クイズリストトップページに移動
+                  _this.$router.push('/quiz_list');
+                }
 
-              case 3:
+              case 5:
               case "end":
                 return _context.stop();
             }
@@ -2241,7 +2315,15 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee);
       }))();
     }
-  }
+  },
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])({
+    apiStatus: function apiStatus(state) {
+      return state.auth.apiStatus;
+    },
+    loginErrors: function loginErrors(state) {
+      return state.auth.loginErrorMessages;
+    }
+  }))
 });
 
 /***/ }),
@@ -39825,9 +39907,54 @@ var render = function() {
                                 "div",
                                 { staticClass: "pt-6" },
                                 [
+                                  _vm.loginErrors
+                                    ? _c("div", [
+                                        _vm.loginErrors.email
+                                          ? _c(
+                                              "ul",
+                                              _vm._l(
+                                                _vm.loginErrors.email,
+                                                function(msg) {
+                                                  return _c(
+                                                    "li",
+                                                    {
+                                                      key: msg,
+                                                      staticClass: "text-danger"
+                                                    },
+                                                    [_vm._v(_vm._s(msg))]
+                                                  )
+                                                }
+                                              ),
+                                              0
+                                            )
+                                          : _vm._e(),
+                                        _vm._v(" "),
+                                        _vm.loginErrors.password
+                                          ? _c(
+                                              "ul",
+                                              _vm._l(
+                                                _vm.loginErrors.password,
+                                                function(msg) {
+                                                  return _c(
+                                                    "li",
+                                                    {
+                                                      key: msg,
+                                                      staticClass: "text-danger"
+                                                    },
+                                                    [_vm._v(_vm._s(msg))]
+                                                  )
+                                                }
+                                              ),
+                                              0
+                                            )
+                                          : _vm._e()
+                                      ])
+                                    : _vm._e(),
+                                  _vm._v(" "),
                                   _c(
                                     "v-form",
                                     {
+                                      ref: "form",
                                       on: {
                                         submit: function($event) {
                                           $event.preventDefault()
@@ -39843,7 +39970,11 @@ var render = function() {
                                           height: "48px",
                                           outlined: "",
                                           placeholder: "Email",
-                                          id: "login-email"
+                                          id: "login-email",
+                                          rules: [
+                                            _vm.emailRules.required,
+                                            _vm.emailRules.regex
+                                          ]
                                         },
                                         model: {
                                           value: _vm.loginForm.email,
@@ -39865,7 +39996,11 @@ var render = function() {
                                           height: "48px",
                                           outlined: "",
                                           placeholder: "Password",
-                                          id: "login-password"
+                                          id: "login-password",
+                                          rules: [
+                                            _vm.passwordRules.required,
+                                            _vm.passwordRules.minLength
+                                          ]
                                         },
                                         model: {
                                           value: _vm.loginForm.password,
@@ -40290,6 +40425,30 @@ var render = function() {
     ],
     1
   )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/pages/errors/System.vue?vue&type=template&id=3023295a&":
+/*!***********************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/pages/errors/System.vue?vue&type=template&id=3023295a& ***!
+  \***********************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("p", [_vm._v("システムエラー")])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -101277,6 +101436,13 @@ window.axios.interceptors.request.use(function (config) {
   // クッキーからトークンを取り出してヘッダーに添付する
   config.headers['X-XSRF-TOKEN'] = Object(_util__WEBPACK_IMPORTED_MODULE_0__["getCookieValue"])('XSRF-TOKEN');
   return config;
+}); // axios の response インターセプターはレスポンスを受けた後の処理を上書きします
+// エラーレスポンスが返ってきた場合はエラーそのものではなくレスポンスオブジェクトを返す、という処理はどの API 呼び出しにも共通しているためまとめる
+
+window.axios.interceptors.response.use(function (response) {
+  return response;
+}, function (error) {
+  return error.response || error;
 });
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
@@ -101799,6 +101965,59 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/pages/errors/System.vue":
+/*!**********************************************!*\
+  !*** ./resources/js/pages/errors/System.vue ***!
+  \**********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _System_vue_vue_type_template_id_3023295a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./System.vue?vue&type=template&id=3023295a& */ "./resources/js/pages/errors/System.vue?vue&type=template&id=3023295a&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+var script = {}
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_1__["default"])(
+  script,
+  _System_vue_vue_type_template_id_3023295a___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _System_vue_vue_type_template_id_3023295a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/pages/errors/System.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/pages/errors/System.vue?vue&type=template&id=3023295a&":
+/*!*****************************************************************************!*\
+  !*** ./resources/js/pages/errors/System.vue?vue&type=template&id=3023295a& ***!
+  \*****************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_System_vue_vue_type_template_id_3023295a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./System.vue?vue&type=template&id=3023295a& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/pages/errors/System.vue?vue&type=template&id=3023295a&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_System_vue_vue_type_template_id_3023295a___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_System_vue_vue_type_template_id_3023295a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/router.js":
 /*!********************************!*\
   !*** ./resources/js/router.js ***!
@@ -101816,8 +102035,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _pages_Login_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./pages/Login.vue */ "./resources/js/pages/Login.vue");
 /* harmony import */ var _pages_FogotPassword_vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./pages/FogotPassword.vue */ "./resources/js/pages/FogotPassword.vue");
 /* harmony import */ var _pages_QuizList_vue__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./pages/QuizList.vue */ "./resources/js/pages/QuizList.vue");
+/* harmony import */ var _pages_errors_System_vue__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./pages/errors/System.vue */ "./resources/js/pages/errors/System.vue");
 
  // ページコンポーネント
+
 
 
 
@@ -101848,6 +102069,9 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
     path: '/quiz_list',
     name: 'quiz_list',
     component: _pages_QuizList_vue__WEBPACK_IMPORTED_MODULE_6__["default"]
+  }, {
+    path: '/500',
+    component: _pages_errors_System_vue__WEBPACK_IMPORTED_MODULE_7__["default"]
   }]
 });
 /* harmony default export */ __webpack_exports__["default"] = (router);
@@ -101865,21 +102089,31 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../util */ "./resources/js/util.js");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
+
 var state = {
   // ログイン済みユーザーを保持するuser
-  user: null
+  user: null,
+  apiStatus: null,
+  loginErrorMessages: null
 };
 var getters = {};
 var mutations = {
   // 第一引数はステート,実引数は第二引数から
   setUser: function setUser(state, user) {
     state.user = user;
+  },
+  setApiStatus: function setApiStatus(state, status) {
+    state.apiStatus = status;
+  },
+  setLoginErrorMessages: function setLoginErrorMessages(state, messages) {
+    state.loginErrorMessages = messages;
   }
 };
 var actions = {
@@ -101895,12 +102129,13 @@ var actions = {
           switch (_context.prev = _context.next) {
             case 0:
               _context.next = 2;
-              return axios.post('/api/register', data)["catch"](function (error) {
-                console.log("ERRRR: ", error.response.data);
-              });
+              return axios.post('/api/register', data);
 
             case 2:
               response = _context.sent;
+              // .catch(error => {
+              //     console.log("ERRRR: ",error.response.data);
+              // });
               context.commit('setUser', response.data);
 
             case 4:
@@ -101918,16 +102153,37 @@ var actions = {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
-              _context2.next = 2;
-              return axios.post('/api/login', data)["catch"](function (error) {
-                console.log("ERRRR: ", error.response.data);
-              });
+              context.commit('setApiStatus', null);
+              _context2.next = 3;
+              return axios.post('/api/login', data);
 
-            case 2:
+            case 3:
               response = _context2.sent;
-              context.commit('setUser', response.data);
 
-            case 4:
+              if (!(response.status === _util__WEBPACK_IMPORTED_MODULE_1__["OK"])) {
+                _context2.next = 8;
+                break;
+              }
+
+              context.commit('setApiStatus', true);
+              context.commit('setUser', response.data);
+              return _context2.abrupt("return", false);
+
+            case 8:
+              // ステータス問題ある時
+              context.commit('setApiStatus', false); // バリデーションエラー検知
+
+              if (response.status === _util__WEBPACK_IMPORTED_MODULE_1__["UNPROCESSABLE_ENTITY"]) {
+                // バリデーションエラーの場合はルートコンポーネントに制御を渡さず、ページコンポーネント内でエラーの表示を行う
+                context.commit('setLoginErrorMessages', response.data.errors);
+              } else {
+                // あるストアモジュールから別のモジュールのミューテーションを commit する場合は第三引数に { root: true } を追加
+                context.commit('error/setCode', response.status, {
+                  root: true
+                });
+              }
+
+            case 10:
             case "end":
               return _context2.stop();
           }
@@ -101943,12 +102199,13 @@ var actions = {
           switch (_context3.prev = _context3.next) {
             case 0:
               _context3.next = 2;
-              return axios.post('/api/logout')["catch"](function (error) {
-                console.log("ERRRR: ", error.response.data);
-              });
+              return axios.post('/api/logout');
 
             case 2:
               response = _context3.sent;
+              // .catch(error => {
+              //     console.log("Error: ",error.response.data);
+              // });
               context.commit('setUser', null);
 
             case 4:
@@ -101970,6 +102227,31 @@ var actions = {
 
 /***/ }),
 
+/***/ "./resources/js/store/error.js":
+/*!*************************************!*\
+  !*** ./resources/js/store/error.js ***!
+  \*************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+var state = {
+  code: null
+};
+var mutations = {
+  setCode: function setCode(state, code) {
+    state.code = code;
+  }
+};
+/* harmony default export */ __webpack_exports__["default"] = ({
+  namespaced: true,
+  state: state,
+  mutations: mutations
+});
+
+/***/ }),
+
 /***/ "./resources/js/store/index.js":
 /*!*************************************!*\
   !*** ./resources/js/store/index.js ***!
@@ -101983,6 +102265,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var _auth__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./auth */ "./resources/js/store/auth.js");
+/* harmony import */ var _error__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./error */ "./resources/js/store/error.js");
+
 
 
  // this.$storeをグローバルに使用できる
@@ -101990,7 +102274,8 @@ __webpack_require__.r(__webpack_exports__);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__["default"]);
 var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
   modules: {
-    auth: _auth__WEBPACK_IMPORTED_MODULE_2__["default"]
+    auth: _auth__WEBPACK_IMPORTED_MODULE_2__["default"],
+    error: _error__WEBPACK_IMPORTED_MODULE_3__["default"]
   }
 });
 /* harmony default export */ __webpack_exports__["default"] = (store);
@@ -102001,12 +102286,16 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
 /*!******************************!*\
   !*** ./resources/js/util.js ***!
   \******************************/
-/*! exports provided: getCookieValue */
+/*! exports provided: getCookieValue, OK, CREATED, UNPROCESSABLE_ENTITY, INTERNAL_SERVER_ERROR */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getCookieValue", function() { return getCookieValue; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "OK", function() { return OK; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CREATED", function() { return CREATED; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "UNPROCESSABLE_ENTITY", function() { return UNPROCESSABLE_ENTITY; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "INTERNAL_SERVER_ERROR", function() { return INTERNAL_SERVER_ERROR; });
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -102044,6 +102333,15 @@ function getCookieValue(searchKey) {
   });
   return val;
 }
+/**
+ * レスポンスコードのハードコードを避ける
+ */
+
+var OK = 200;
+var CREATED = 201;
+var UNPROCESSABLE_ENTITY = 422; // バリデーションエラー
+
+var INTERNAL_SERVER_ERROR = 500;
 
 /***/ }),
 
